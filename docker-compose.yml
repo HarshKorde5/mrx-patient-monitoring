@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: mrx_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mrx_health
+      POSTGRES_USER: mrx_user
+      POSTGRES_PASSWORD: mrx_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mrx_user -d mrx_health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
