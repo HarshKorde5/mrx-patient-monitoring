@@ -41,3 +41,4 @@ uritemplate==4.2.0
 weasyprint==70.0
 webencodings==0.6.1
 zopfli==0.4.3
+python-dateutil==2.9.0.post0
