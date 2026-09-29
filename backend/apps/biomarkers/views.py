@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
 
-from apps.common.permissions import IsAdmin
+from apps.common.permissions import IsDoctorOrAdmin, IsAdmin
 from .models import Biomarker
 from .serializers import BiomarkerSerializer, BiomarkerCreateUpdateSerializer
 
@@ -18,8 +18,10 @@ class BiomarkerViewSet(viewsets.ModelViewSet):
         return BiomarkerSerializer
 
     def get_permissions(self):
-        """Only Admin can create/update/delete biomarkers."""
-        if self.action in ["create", "update", "partial_update", "destroy"]:
+        """Doctor/Admin can create/update; only Admin can delete."""
+        if self.action in ["create", "update", "partial_update"]:
+            permission_classes = [IsDoctorOrAdmin]  # Changed from IsAdmin
+        elif self.action == "destroy":
             permission_classes = [IsAdmin]
         else:
             permission_classes = [permissions.IsAuthenticated]
