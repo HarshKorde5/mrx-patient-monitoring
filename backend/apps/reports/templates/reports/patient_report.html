@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            border-bottom: 2px solid #2f6fed;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            color: #2f6fed;
+            font-size: 24px;
+        }
+        .subtitle {
+            color: #777;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .section {
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #2f6fed;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .chart {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .chart img {
+            max-width: 100%;
+            height: auto;
+        }
+        .footer {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            font-size: 11px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MRX HealthTECH - Patient Report</h1>
+        <div class="subtitle">
+            Generated {{ generated_at|date:"d M Y H:i" }} by Dr. {{ generated_by }}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Patient Information</h2>
+        <p>
+            <b>Patient Code:</b> {{ patient.patient_code }}<br>
+            <b>Name:</b> {{ patient.full_name }}<br>
+            <b>Age:</b> {{ patient.age }} years<br>
+            <b>Gender:</b> {{ patient.get_gender_display }}<br>
+            <b>Date of Birth:</b> {{ patient.date_of_birth|date:"d M Y" }}<br>
+            {% if patient.medical_history %}
+            <b>Medical History:</b> {{ patient.medical_history }}<br>
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Biomarker: {{ biomarker.name }}</h2>
+        <p>
+            <b>Code:</b> {{ biomarker.code }}<br>
+            <b>Unit:</b> {{ biomarker.unit }}<br>
+            {% if biomarker.reference_min and biomarker.reference_max %}
+            <b>Reference Range:</b> {{ biomarker.reference_min }} - {{ biomarker.reference_max }} {{ biomarker.unit }}<br>
+            {% endif %}
+            {% if biomarker.description %}
+            <b>Description:</b> {{ biomarker.description }}<br>
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Trend Chart</h2>
+        <div class="chart">
+            <img src="data:image/png;base64,{{ chart_base64 }}" alt="Trend chart">
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Test History</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Value</th>
+                    <th>Unit</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr>
+                    <td>{{ result.test_date|date:"d M Y" }}</td>
+                    <td>{{ result.value }}</td>
+                    <td>{{ result.unit }}</td>
+                    <td>{{ result.notes }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No results</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>
+            This is a prototype report with dummy data only. Not for clinical use.<br>
+            For real clinical use, additional compliance measures (HIPAA, GDPR, encryption, audit trail) would be required.
+        </p>
+    </div>
+</body>
+</html>
